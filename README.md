@@ -11,7 +11,7 @@
 
 **An enterprise-grade, full-stack fitness and nutritional architecture delivering personalized 7-day periodized routines, dual-gender caloric targets, inter-set stopwatch timers, and 1-click calendar sync powered by Google Gemini Models.**
 
-[Live Repository](https://github.com/codingguna/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models) • [Report Issue](https://github.com/codingguna/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models/issues) • [API Documentation](http://127.0.0.1:8000/api/docs)
+[Live Repository](https://github.com/codinggopi/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models) • [Report Issue](https://github.com/codinggopi/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models/issues) • [API Documentation](http://127.0.0.1:8000/api/docs)
 
 </div>
 
@@ -200,7 +200,7 @@ FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models/
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/codingguna/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models.git
+git clone https://github.com/codinggopi/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models.git
 cd FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models
 ```
 
@@ -252,7 +252,7 @@ python tests/test_api.py
 
 ## 📄 License & Author
 
-Developed and maintained by **[codingguna](https://github.com/codingguna)**.  
-Repository: **[FitBuddy — AI Fitness Plan Generator using Gemini Models](https://github.com/codingguna/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models)**
+Developed and maintained by **[codinggopi](https://github.com/codinggopi)**.  
+Repository: **[FitBuddy — AI Fitness Plan Generator using Gemini Models](https://github.com/codinggopi/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models)**
 
 Distributed under the MIT License. See `LICENSE` for more information.
