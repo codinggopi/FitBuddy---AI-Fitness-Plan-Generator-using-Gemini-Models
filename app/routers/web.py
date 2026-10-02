@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 @router.get("/", response_class=HTMLResponse)
 async def index_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 
 @router.get("/history", response_class=HTMLResponse)
@@ -27,7 +27,7 @@ async def history_page(request: Request, db: Session = Depends(get_db)):
         .limit(50)
         .all()
     )
-    return templates.TemplateResponse("history.html", {"request": request, "plans": plans})
+    return templates.TemplateResponse(request, "history.html", {"plans": plans})
 
 
 @router.get("/health")
