@@ -1,41 +1,57 @@
-"""
-main.py
-FastAPI application entry point for FitBuddy.
-"""
-
 import os
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
-from .database import init_db
-from .routes import router
+from app.config import settings
+from app.database import init_db
+from app.routers import web_router, plans_router, nutrition_router, export_router
 
-# ---------------------------------------------------------------------------
-# Startup / shutdown lifecycle
-# ---------------------------------------------------------------------------
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIR = BASE_DIR / "static"
+
+
+# Ensure database and tables exist
+init_db()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()          # Create DB tables on first run
+    # Safe startup initialization of database schema
+    init_db()
     yield
 
 
-# ---------------------------------------------------------------------------
-# App factory
-# ---------------------------------------------------------------------------
 app = FastAPI(
-    title="FitBuddy – AI Fitness Planner",
-    description="Personalised 7-day workout plans powered by Google Gemini.",
-    version="2.0.0",
+    title=settings.APP_NAME,
+    description=settings.APP_DESCRIPTION,
+    version=settings.APP_VERSION,
     lifespan=lifespan,
+    docs_url="/api/docs",
+    redoc_url="/api/redoc"
 )
 
-# Mount static files (images, css, js)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-static_dir = os.path.join(BASE_DIR, "static")
-os.makedirs(static_dir, exist_ok=True)
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+# CORS setup
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Register all routes
-app.include_router(router)
+# Ensure static directories exist and mount static files
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+(STATIC_DIR / "css").mkdir(parents=True, exist_ok=True)
+(STATIC_DIR / "js").mkdir(parents=True, exist_ok=True)
+(STATIC_DIR / "images").mkdir(parents=True, exist_ok=True)
+
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# Include Modular Routers
+app.include_router(web_router)
+app.include_router(plans_router)
+app.include_router(nutrition_router)
+app.include_router(export_router)

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>{% block title %}FitBuddy AI — Intelligent Fitness & Nutrition Architecture{% endblock %}</title>
+
+  <!-- Typography: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: {
+          'xs': '420px',
+          'sm': '640px',
+          'md': '768px',
+          'lg': '1024px',
+          'xl': '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+              950: '#1e1b4b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Design Tokens & Styles -->
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="min-h-full flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- Responsive Navigation Header -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 glass-header border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-2 sm:gap-3 group shrink-0">
+        <div class="h-9 w-9 sm:h-10 sm:w-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/25 font-black text-lg sm:text-xl group-hover:scale-105 transition-transform">
+          F
+        </div>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <span class="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">FitBuddy<span class="text-brand-600 dark:text-brand-400">.ai</span></span>
+          <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Gemini Flash (Free Tier)
+          </span>
+        </div>
+      </a>
+
+      <!-- Action Navigation -->
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        
+        <!-- View Active Plan (if loaded) -->
+        <button id="viewActivePlanBtn" onclick="scrollToActivePlan()" class="hidden text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          Active Plan
+        </button>
+
+        <!-- BMI Calculator Button -->
+        <button onclick="BmiCalculator.openModal()" title="Interactive BMI & Body Composition Calculator" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <span>⚖️</span>
+          <span class="hidden sm:inline">BMI Calc</span>
+        </button>
+
+        <!-- Saved History Drawer Button -->
+        <button onclick="openHistoryDrawer()" title="View Saved Routines" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <span>📋</span>
+          <span class="hidden sm:inline">Routines</span>
+        </button>
+
+        <!-- Theme Toggle (Dark/Light) -->
+        <button onclick="ThemeManager.toggle()" title="Toggle Theme" class="p-1.5 sm:p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition text-sm">
+          <span id="themeToggleIcon">🌙</span>
+        </button>
+
+        <!-- + New Plan -->
+        <button onclick="resetPlanner()" class="text-xs font-extrabold text-white bg-brand-600 hover:bg-brand-700 px-3 sm:px-4 py-2 rounded-xl transition shadow-md shadow-brand-500/20 active:scale-95 shrink-0">
+          <span class="sm:hidden">+ Plan</span>
+          <span class="hidden sm:inline">+ New Plan</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- Main Content Container -->
+  <!-- ========================================================================= -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- History Drawer (Mobile Fullscreen / Desktop Slide-over) -->
+  <!-- ========================================================================= -->
+  <div id="historyDrawer" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+    <div class="w-full sm:max-w-md bg-white dark:bg-slate-900 h-full p-4 sm:p-6 shadow-2xl flex flex-col justify-between overflow-y-auto space-y-4">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📋</span>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Routine Archive</h3>
+          </div>
+          <button onclick="closeHistoryDrawer()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white transition text-lg leading-none">
+            ✕
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          Saved routines from your database. Load any schedule to resume your workout session or export its calendar.
+        </p>
+        <div id="historyList" class="space-y-3">
+          <!-- Populated via JavaScript -->
+        </div>
+      </div>
+      
+      <div class="border-t border-slate-100 dark:border-slate-800 pt-3 text-center">
+        <a href="/history" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">
+          Open Full History Dashboard →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Interactive BMI & Body Composition Calculator Modal -->
+  <!-- ========================================================================= -->
+  <div id="bmiModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">⚖️</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">BMI & Body Composition Suite</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Scientific analysis calibrated to WHO standards & Deurenberg formula.</p>
+          </div>
+        </div>
+        <button onclick="BmiCalculator.closeModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white transition text-lg leading-none">
+          ✕
+        </button>
+      </div>
+
+      <!-- Unit Selector -->
+      <div class="flex items-center justify-between gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-bold">
+        <button type="button" id="bmiUnitMetric" onclick="BmiCalculator.setUnit('metric')" class="flex-1 py-1.5 rounded-xl bg-brand-600 text-white shadow-sm transition">Metric (kg / cm)</button>
+        <button type="button" id="bmiUnitImperial" onclick="BmiCalculator.setUnit('imperial')" class="flex-1 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Imperial (lbs / in)</button>
+      </div>
+
+      <!-- Sliders / Inputs Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <!-- Height -->
+        <div class="space-y-1.5 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span id="bmiHeightLabel" class="text-slate-700 dark:text-slate-300">Height</span>
+            <span id="bmiHeightDisplay" class="text-brand-600 dark:text-brand-400 font-extrabold text-sm">175 cm</span>
+          </div>
+          <input type="range" id="bmiHeightSlider" min="120" max="230" value="175" oninput="BmiCalculator.onHeightChange(this.value)" class="w-full accent-brand-600 cursor-pointer" />
+        </div>
+
+        <!-- Weight -->
+        <div class="space-y-1.5 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span id="bmiWeightLabel" class="text-slate-700 dark:text-slate-300">Weight</span>
+            <span id="bmiWeightDisplay" class="text-brand-600 dark:text-brand-400 font-extrabold text-sm">72 kg</span>
+          </div>
+          <input type="range" id="bmiWeightSlider" min="35" max="180" step="0.5" value="72" oninput="BmiCalculator.onWeightChange(this.value)" class="w-full accent-brand-600 cursor-pointer" />
+        </div>
+
+        <!-- Age -->
+        <div class="space-y-1.5 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+          <div class="flex items-center justify-between text-xs font-bold">
+            <span class="text-slate-700 dark:text-slate-300">Age</span>
+            <span id="bmiAgeDisplay" class="text-brand-600 dark:text-brand-400 font-extrabold text-sm">26 yrs</span>
+          </div>
+          <input type="range" id="bmiAgeSlider" min="14" max="85" value="26" oninput="BmiCalculator.onAgeChange(this.value)" class="w-full accent-brand-600 cursor-pointer" />
+        </div>
+
+        <!-- Biological Sex -->
+        <div class="space-y-1.5 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+          <label for="bmiSexSelect" class="block text-xs font-bold text-slate-700 dark:text-slate-300">Biological Sex</label>
+          <select id="bmiSexSelect" onchange="BmiCalculator.onSexChange(this.value)" class="w-full px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white">
+            <option value="male">Male (Sex factor 1.0)</option>
+            <option value="female">Female (Sex factor 0.0)</option>
+            <option value="other" selected>Neutral</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Results Gauge Card -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-brand-50/70 via-indigo-50/40 to-white dark:from-brand-950/40 dark:via-slate-800/50 dark:to-slate-900 border border-brand-200/70 dark:border-brand-800/60 space-y-4">
+        
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Your Body Mass Index</span>
+            <div class="flex items-baseline gap-2.5 mt-0.5">
+              <span id="bmiScoreVal" class="text-3xl sm:text-4xl font-black text-brand-600 dark:text-brand-400 font-mono">23.5</span>
+              <span id="bmiCategoryBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                Normal Weight
+              </span>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Est. Body Fat</span>
+            <div id="bmiBodyFatVal" class="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white font-mono mt-0.5">18.4%</div>
+          </div>
+        </div>
+
+        <!-- WHO BMI Visual Gradient Spectrum Bar -->
+        <div class="space-y-1.5">
+          <div class="h-3 w-full rounded-full overflow-hidden flex shadow-inner">
+            <div title="Underweight (< 18.5)" class="h-full bg-sky-400" style="width: 25%"></div>
+            <div title="Normal (18.5 - 24.9)" class="h-full bg-emerald-500" style="width: 30%"></div>
+            <div title="Overweight (25 - 29.9)" class="h-full bg-amber-500" style="width: 25%"></div>
+            <div title="Obesity (>= 30)" class="h-full bg-rose-500" style="width: 20%"></div>
+          </div>
+          <div class="flex justify-between text-[10px] font-bold text-slate-400">
+            <span>&lt; 18.5 (Under)</span>
+            <span>18.5 - 24.9 (Normal)</span>
+            <span>25 - 29.9 (Over)</span>
+            <span>30+ (Obese)</span>
+          </div>
+        </div>
+
+        <!-- Metrics Comparison Grid -->
+        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-200/70 dark:border-slate-800 text-xs">
+          <div class="space-y-0.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Healthy Weight Window</span>
+            <div id="bmiHealthyRangeVal" class="font-extrabold text-slate-900 dark:text-white">56.7 kg – 76.3 kg</div>
+          </div>
+          <div class="space-y-0.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Weight Delta</span>
+            <div id="bmiDeltaVal" class="font-extrabold text-emerald-600 dark:text-emerald-400">In optimal range (0 kg)</div>
+          </div>
+        </div>
+
+        <!-- Recommendation Note -->
+        <p id="bmiAdviceText" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed italic bg-white/70 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+          Optimal healthy range. Maintain your current weight with progressive strength training and conditioning.
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <button type="button" onclick="BmiCalculator.applyToPlanner()" class="w-full py-3.5 px-4 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-black text-xs sm:text-sm shadow-lg shadow-brand-500/25 transition active:scale-[0.99] flex items-center justify-center gap-2">
+        <span>✨</span>
+        <span>Apply Stats & Load into Workout Studio</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- Toast Notification Container (Responsive Mobile Dock) -->
+  <!-- ========================================================================= -->
+  <div id="toastContainer" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 flex flex-col gap-2 pointer-events-none max-w-md"></div>
+
+  <!-- ========================================================================= -->
+  <!-- Responsive Footer -->
+  <!-- ========================================================================= -->
+  <footer class="glass-header border-t border-slate-200/80 dark:border-slate-800 py-6 sm:py-8 text-xs text-slate-500 dark:text-slate-400 no-print transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+        <span class="font-bold text-slate-800 dark:text-slate-200">FitBuddy AI v3.0</span>
+        <span>•</span>
+        <span>Gemini Flash (Free Tier)</span>
+        <span>•</span>
+        <span class="text-emerald-500 font-medium">Mifflin-St Jeor Engine</span>
+      </div>
+      <div class="flex items-center justify-center gap-4">
+        <!-- <a href="/api/docs" target="_blank" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-semibold">Swagger API</a> -->
+        <a href="https://github.com/codingguna/FitBuddy---AI-Fitness-Plan-Generator-using-Gemini-Models" target="_blank" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-semibold">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript -->
+  <script src="/static/js/app.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

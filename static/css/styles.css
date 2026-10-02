@@ -1,0 +1,145 @@
+/* FitBuddy AI - Enterprise Responsive Design System */
+:root {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f1f5f9;
+  --border-card: #e2e8f0;
+  --border-focus: #6366f1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --brand-primary: #4f46e5;
+  --brand-secondary: #6366f1;
+  --brand-glow: rgba(79, 70, 229, 0.15);
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --info-color: #0ea5e9;
+}
+
+html.dark {
+  --bg-main: #0b0f19;
+  --bg-card: #111827;
+  --bg-card-subtle: #1e293b;
+  --border-card: #1f2937;
+  --border-focus: #818cf8;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --text-faint: #6b7280;
+  --brand-primary: #6366f1;
+  --brand-secondary: #818cf8;
+  --brand-glow: rgba(99, 102, 241, 0.25);
+  --success-color: #34d399;
+  --warning-color: #fbbf24;
+  --info-color: #38bdf8;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Glassmorphism & Elevated Cards */
+.fit-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fit-card:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.glass-header {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+html.dark .glass-header {
+  background: rgba(17, 24, 39, 0.90);
+}
+
+/* Touch-optimized horizontal scrolling */
+.touch-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.touch-scroll-x::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Prevent auto-zoom on iOS when tapping inputs */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Custom Scrollbar for desktop */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
+
+/* Exercise Checkbox Custom Style */
+.exercise-checkbox:checked + div span.exercise-title {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+/* Soft Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Print Stylesheet for Gym Floor Sheet */
+@media print {
+  header, footer, #intakeSection, #refineSection, #restTimerWidget, .no-print, #historyDrawer, #toastContainer, .day-tab-container {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+  .fit-card {
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 12px !important;
+  }
+  #planGrid {
+    display: block !important;
+  }
+  .day-card {
+    display: block !important;
+    margin-bottom: 18px !important;
+  }
+}

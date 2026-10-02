@@ -1,333 +1,466 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FitBuddy – AI Fitness Planner</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary:  { DEFAULT: '#6366f1', dark: '#4f46e5' },
-            accent:   { DEFAULT: '#10b981', dark: '#059669' },
-            surface:  '#1e1e2e',
-            card:     '#27273a',
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { background: #12121f; }
-    .gradient-text {
-      background: linear-gradient(90deg, #6366f1, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .day-card:hover { transform: translateY(-3px); transition: transform .2s; }
-    .spinner {
-      border: 3px solid rgba(255,255,255,.2);
-      border-top-color: #6366f1;
-      border-radius: 50%;
-      width: 22px; height: 22px;
-      animation: spin .7s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
-</head>
-<body class="min-h-screen text-gray-100 font-sans">
+{% extends "base.html" %}
 
-  <!-- ====== HEADER ====== -->
-  <header class="sticky top-0 z-50 backdrop-blur bg-black/40 border-b border-white/10">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-lg">💪</div>
-      <span class="text-xl font-bold gradient-text">FitBuddy</span>
-      <span class="ml-auto text-sm text-gray-400">AI-Powered Fitness Planner</span>
-    </div>
-  </header>
+{% block title %}FitBuddy AI — Personalized 7-Day Workout & Nutrition Protocol{% endblock %}
 
-  <main class="max-w-6xl mx-auto px-6 py-10 space-y-10">
+{% block content %}
+<!-- ========================================================================= -->
+<!-- Hero Greeting -->
+<!-- ========================================================================= -->
+<section class="text-center max-w-4xl mx-auto space-y-3 sm:space-y-4 pt-2 sm:pt-4">
+  <div class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-[11px] sm:text-xs font-bold text-brand-700 dark:text-brand-300">
+    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+    Scientific Fitness Architecture • Gemini Flash (Free Tier)
+  </div>
+  
+  <h1 class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+    Elevate Your Physique with a <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 dark:from-brand-400 dark:via-indigo-400 dark:to-purple-400">Custom 7-Day Routine</span>
+  </h1>
+  
+  <p class="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2">
+    Tailored to your body stats, equipment, joint considerations, and dietary style. Includes inter-set rest stopwatch, interactive exercise checkboxes, macro targets, and 1-click Calendar sync.
+  </p>
+</section>
 
-    <!-- ====== HERO ====== -->
-    <section class="text-center space-y-3">
-      <h1 class="text-4xl md:text-5xl font-extrabold gradient-text">Your Personal AI Trainer</h1>
-      <p class="text-gray-400 max-w-xl mx-auto">Fill in your details and FitBuddy will craft a personalised 7-day workout plan powered by Google Gemini.</p>
-    </section>
+<!-- ========================================================================= -->
+<!-- Intake Studio: User Parameters Form -->
+<!-- ========================================================================= -->
+<section id="intakeSection" class="fit-card rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-8 lg:p-10 space-y-6 sm:space-y-8">
+  <form id="generateForm" class="space-y-6 sm:space-y-8">
 
-    <!-- ====== GENERATE FORM ====== -->
-    <section class="bg-card rounded-2xl p-8 border border-white/10 shadow-xl">
-      <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">🏋️ Create Your Plan</h2>
-      <form id="generateForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <!-- Step 1: Personal Bio & Physical Metrics -->
+    <div>
+      <div class="flex items-center justify-between mb-3 sm:mb-4 flex-wrap gap-2">
+        <h2 class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center text-[10px] font-black">1</span>
+          Personal Bio & Physical Metrics
+        </h2>
+        
+        <!-- Unit Toggle (Metric / Imperial) -->
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[11px] sm:text-xs font-bold">
+          <button type="button" id="btnMetric" onclick="UnitManager.setSystem('metric')" class="px-2 sm:px-2.5 py-1 rounded-lg bg-brand-600 text-white transition">Metric (kg/cm)</button>
+          <button type="button" id="btnImperial" onclick="UnitManager.setSystem('imperial')" class="px-2 sm:px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Imperial (lbs/in)</button>
+        </div>
+      </div>
 
-        <div class="space-y-1">
-          <label class="text-sm text-gray-400">Full Name</label>
-          <input id="f-name" type="text" placeholder="Alex Johnson" required
-            class="w-full bg-surface border border-white/10 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <!-- Full Name -->
+        <div class="sm:col-span-2 md:col-span-1 lg:col-span-1">
+          <label for="f-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Athlete Name</label>
+          <input type="text" id="f-name" required placeholder="Alex Miller" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
         </div>
 
-        <div class="space-y-1">
-          <label class="text-sm text-gray-400">Age</label>
-          <input id="f-age" type="number" min="10" max="100" placeholder="25" required
-            class="w-full bg-surface border border-white/10 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
+        <!-- Age -->
+        <div>
+          <label for="f-age" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Age</label>
+          <input type="number" id="f-age" required min="12" max="100" placeholder="26" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
         </div>
 
-        <div class="space-y-1">
-          <label class="text-sm text-gray-400">Weight (kg)</label>
-          <input id="f-weight" type="number" step="0.1" min="30" placeholder="70" required
-            class="w-full bg-surface border border-white/10 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-sm text-gray-400">Fitness Goal</label>
-          <select id="f-goal" required
-            class="w-full bg-surface border border-white/10 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition">
-            <option value="">Select a goal…</option>
-            <option value="Weight Loss">Weight Loss</option>
-            <option value="Muscle Gain">Muscle Gain</option>
-            <option value="Improve Endurance">Improve Endurance</option>
-            <option value="General Fitness">General Fitness</option>
-            <option value="Flexibility & Mobility">Flexibility & Mobility</option>
+        <!-- Biological Sex -->
+        <div>
+          <label for="f-gender" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Biological Sex</label>
+          <select id="f-gender" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition">
+            <option value="male">Male (BMR +5)</option>
+            <option value="female">Female (BMR -161)</option>
+            <option value="other" selected>Neutral / General</option>
           </select>
         </div>
 
-        <div class="space-y-1 md:col-span-2">
-          <label class="text-sm text-gray-400">Intensity</label>
-          <div class="flex gap-3 flex-wrap" id="intensityGroup">
-            <label class="intensity-btn cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-surface hover:border-primary transition" data-value="low">
-              <input type="radio" name="intensity" value="low" class="hidden" required /> 🐢 Low
-            </label>
-            <label class="intensity-btn cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-surface hover:border-primary transition" data-value="medium">
-              <input type="radio" name="intensity" value="medium" class="hidden" /> 🚶 Medium
-            </label>
-            <label class="intensity-btn cursor-pointer flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 bg-surface hover:border-primary transition" data-value="high">
-              <input type="radio" name="intensity" value="high" class="hidden" /> 🔥 High
-            </label>
+        <!-- Weight -->
+        <div>
+          <label id="weightLabel" for="f-weight" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Weight (kg)</label>
+          <input type="number" id="f-weight" step="0.5" required min="30" max="400" placeholder="75" oninput="updateBmiChip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
+        </div>
+
+        <!-- Height & BMI Chip -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label id="heightLabel" for="f-height" class="block text-xs font-bold text-slate-700 dark:text-slate-300">Height (cm)</label>
+            <button type="button" id="bmiChip" onclick="BmiCalculator.openModal()" title="Open BMI & Body Composition Calculator" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:scale-105 transition cursor-pointer">BMI: --</button>
+          </div>
+          <input type="number" id="f-height" step="1" required min="100" max="250" placeholder="178" oninput="updateBmiChip()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
+        </div>
+      </div>
+    </div>
+
+    <hr class="border-slate-100 dark:border-slate-800" />
+
+    <!-- Step 2: Primary Goal Selection -->
+    <div>
+      <h2 class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-3 sm:mb-4 flex items-center gap-2">
+        <span class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center text-[10px] font-black">2</span>
+        Primary Fitness Objective
+      </h2>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3" id="goalOptions">
+        <button type="button" onclick="selectChip('goal-chip', this, 'f-goal', 'Fat Loss & Lean Shred')" class="goal-chip flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-center group active:scale-95">
+          <span class="text-xl sm:text-2xl mb-1">🔥</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Fat Loss</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">Burn & Lean</span>
+        </button>
+
+        <button type="button" onclick="selectChip('goal-chip', this, 'f-goal', 'Muscle Hypertrophy & Bulk')" class="goal-chip flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border-2 border-brand-600 bg-brand-50/70 dark:bg-brand-950/40 transition text-center group active:scale-95">
+          <span class="text-xl sm:text-2xl mb-1">💪</span>
+          <span class="text-xs font-bold text-brand-700 dark:text-brand-300">Muscle Gain</span>
+          <span class="text-[10px] text-brand-600/80 dark:text-brand-400 mt-0.5">Hypertrophy</span>
+        </button>
+
+        <button type="button" onclick="selectChip('goal-chip', this, 'f-goal', 'Strength & Heavy Power')" class="goal-chip flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-center group active:scale-95">
+          <span class="text-xl sm:text-2xl mb-1">⚡</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Strength</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">Power & Heavy</span>
+        </button>
+
+        <button type="button" onclick="selectChip('goal-chip', this, 'f-goal', 'Cardio & Stamina Endurance')" class="goal-chip flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-center group active:scale-95">
+          <span class="text-xl sm:text-2xl mb-1">🏃</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Endurance</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">Stamina & Heart</span>
+        </button>
+
+        <button type="button" onclick="selectChip('goal-chip', this, 'f-goal', 'Mobility & Longevity Flow')" class="goal-chip flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-center group active:scale-95 col-span-2 sm:col-span-1">
+          <span class="text-xl sm:text-2xl mb-1">🧘</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Mobility</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">Longevity & Flow</span>
+        </button>
+      </div>
+      <input type="hidden" id="f-goal" value="Muscle Hypertrophy & Bulk" />
+    </div>
+
+    <hr class="border-slate-100 dark:border-slate-800" />
+
+    <!-- Step 3: Training Environment, Intensity & Duration -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      
+      <!-- Training Environment -->
+      <div>
+        <h2 class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center text-[10px] font-black">3</span>
+          Equipment Available
+        </h2>
+        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+          <button type="button" onclick="selectSegment('equip-btn', this, 'f-equipment', 'Full Commercial Gym')" class="equip-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition">
+            Full Gym
+          </button>
+          <button type="button" onclick="selectSegment('equip-btn', this, 'f-equipment', 'Home Dumbbells & Bands')" class="equip-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 transition">
+            Home Gym
+          </button>
+          <button type="button" onclick="selectSegment('equip-btn', this, 'f-equipment', 'Bodyweight Only')" class="equip-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 transition">
+            Bodyweight
+          </button>
+        </div>
+        <input type="hidden" id="f-equipment" value="Full Commercial Gym" />
+      </div>
+
+      <!-- Intensity Level -->
+      <div>
+        <h2 class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center text-[10px] font-black">4</span>
+          Intensity Level
+        </h2>
+        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+          <button type="button" onclick="selectSegment('intensity-btn', this, 'f-intensity', 'low')" class="intensity-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 transition">
+            Beginner
+          </button>
+          <button type="button" onclick="selectSegment('intensity-btn', this, 'f-intensity', 'medium')" class="intensity-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition">
+            Moderate
+          </button>
+          <button type="button" onclick="selectSegment('intensity-btn', this, 'f-intensity', 'high')" class="intensity-btn py-2 sm:py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 transition">
+            Advanced
+          </button>
+        </div>
+        <input type="hidden" id="f-intensity" value="medium" />
+      </div>
+
+      <!-- Target Session Duration & Active Days -->
+      <div>
+        <h2 class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
+          <span class="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 flex items-center justify-center text-[10px] font-black">5</span>
+          Schedule Parameters
+        </h2>
+        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+          <div>
+            <label for="f-duration" class="block text-[11px] font-bold text-slate-500 mb-1">Session Length</label>
+            <select id="f-duration" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white">
+              <option value="30">30 min (Express)</option>
+              <option value="45" selected>45 min (Standard)</option>
+              <option value="60">60 min (Complete)</option>
+              <option value="75">75 min (High-Volume)</option>
+            </select>
+          </div>
+          <div>
+            <label for="f-days" class="block text-[11px] font-bold text-slate-500 mb-1">Active Days</label>
+            <select id="f-days" class="w-full px-2.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white">
+              <option value="4">4 Days / Wk</option>
+              <option value="5">5 Days / Wk</option>
+              <option value="6">6 Days / Wk</option>
+              <option value="7" selected>7 Days / Wk</option>
+            </select>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="md:col-span-2">
-          <button type="submit" id="generateBtn"
-            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
-            <span id="generateBtnText">Generate My Plan ✨</span>
-            <span id="generateSpinner" class="spinner hidden"></span>
-          </button>
-        </div>
+    <hr class="border-slate-100 dark:border-slate-800" />
 
-        <p id="generateError" class="md:col-span-2 text-red-400 text-sm hidden"></p>
-      </form>
-    </section>
-
-    <!-- ====== PLAN DISPLAY ====== -->
-    <section id="planSection" class="hidden space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 class="text-xl font-semibold flex items-center gap-2">📅 Your 7-Day Plan</h2>
-        <div class="flex items-center gap-2 text-sm text-gray-400">
-          Plan ID: <span id="planIdBadge" class="bg-primary/20 text-primary px-3 py-1 rounded-full font-mono font-bold"></span>
-        </div>
+    <!-- Step 4: Nutrition & Injury Safeguards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      
+      <!-- Dietary Style -->
+      <div>
+        <label for="f-dietary" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+          <span>🥗</span> Dietary Preference (for Macro Calibration)
+        </label>
+        <select id="f-dietary" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition">
+          <option value="Standard / Balanced" selected>Standard Omnivore (High-Protein Balanced)</option>
+          <option value="Vegetarian">Vegetarian (Plant-Forward + Dairy/Eggs)</option>
+          <option value="Vegan">Strict Vegan (100% Plant-Based)</option>
+          <option value="Keto / Low-Carb">Keto / Low-Carb (High Fat, Moderate Protein)</option>
+          <option value="Pescatarian">Pescatarian (Fish & Seafood)</option>
+          <option value="Halal">Halal Compliant</option>
+        </select>
       </div>
 
-      <!-- Tip Banner -->
-      <div id="tipBanner" class="hidden bg-accent/10 border border-accent/30 rounded-xl px-5 py-4 flex items-start gap-3">
-        <span class="text-2xl mt-0.5">🥗</span>
-        <div>
-          <p class="text-xs uppercase tracking-widest text-accent font-semibold mb-1">Nutrition / Recovery Tip</p>
-          <p id="tipText" class="text-gray-200"></p>
+      <!-- Physical Considerations / Injuries -->
+      <div>
+        <label for="f-injuries" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+          <span>🛡️</span> Joint Considerations & Prior Injuries
+        </label>
+        <input type="text" id="f-injuries" placeholder="e.g. Knee discomfort (avoid deep lunges), Lower back tightness" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div>
+      <button type="submit" id="generateBtn" class="w-full py-3.5 sm:py-4 px-6 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-black text-sm sm:text-base shadow-xl shadow-brand-500/25 transition-all transform active:scale-[0.99] flex items-center justify-center gap-3">
+        <span id="generateSpinner" class="hidden">
+          <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </span>
+        <span id="generateBtnText">Generate Personalized 7-Day Protocol ✨</span>
+      </button>
+    </div>
+
+    <div id="generateError" class="hidden text-xs sm:text-sm font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 p-3 sm:p-4 rounded-2xl text-center"></div>
+  </form>
+</section>
+
+
+<!-- ========================================================================= -->
+<!-- Active Plan Suite (Appears after Generation or Load) -->
+<!-- ========================================================================= -->
+<section id="planSection" class="hidden space-y-6 sm:space-y-8 animate-fade-in">
+
+  <!-- Plan Header Summary & Action Deck -->
+  <div class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5 shadow-md">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400">Personalized Blueprint</span>
+        <span id="planBadgeId" class="text-xs font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-md">#--</span>
+      </div>
+      <h2 id="planOwnerTitle" class="text-xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Your 7-Day Performance Blueprint</h2>
+      <p id="planStatsSummary" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Customized Routine & Fuel Guidance</p>
+    </div>
+
+    <!-- Responsive Action Tools -->
+    <div class="flex flex-wrap items-center gap-2 no-print">
+      <!-- Calendar Export (.ics) -->
+      <button onclick="downloadCalendar()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 transition shadow-sm">
+        <span>📅</span> Calendar (.ics)
+      </button>
+      
+      <!-- Print / PDF -->
+      <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+        <span>🖨️</span> Print / PDF
+      </button>
+      
+      <!-- Copy Routine -->
+      <button onclick="copyPlanToClipboard()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+        <span>📋</span> Copy
+      </button>
+
+      <!-- JSON Export -->
+      <button onclick="downloadJson()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+        <span>💾</span> JSON
+      </button>
+
+      <!-- Tweak / Refine -->
+      <button onclick="scrollToRefine()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950 hover:bg-brand-100 transition border border-brand-200 dark:border-brand-800">
+        <span>⚡</span> Tweak
+      </button>
+    </div>
+  </div>
+
+  <!-- Nutrition & Macro Target Deck -->
+  <div id="nutritionCard" class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+      
+      <div class="space-y-1.5 max-w-xl">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-xl">🥗</span>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Nutrition Targets & Fuel Guidance</h3>
+          <span id="goalTypeBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">Calibrated</span>
         </div>
-        <button onclick="refreshTip()" title="Get a new tip"
-          class="ml-auto text-accent hover:text-white transition text-lg shrink-0">↺</button>
+        <p id="nutritionTipText" class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+          Calculating recovery targets...
+        </p>
       </div>
 
-      <!-- Day cards grid -->
-      <div id="planGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-
-      <!-- ====== REFINE FORM ====== -->
-      <div class="bg-card rounded-2xl p-6 border border-white/10 shadow-md space-y-4">
-        <h3 class="font-semibold text-lg flex items-center gap-2">✏️ Refine Your Plan</h3>
-        <p class="text-sm text-gray-400">Not happy with the plan? Tell FitBuddy what to change.</p>
-        <div class="flex gap-3 flex-col sm:flex-row">
-          <input id="feedbackInput" type="text" placeholder="e.g. more cardio, too hard, add stretching…"
-            class="flex-1 bg-surface border border-white/10 rounded-xl px-4 py-2.5 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-          <button onclick="refinePlan()" id="refineBtn"
-            class="bg-accent hover:bg-accent-dark text-white font-semibold px-6 py-2.5 rounded-xl transition flex items-center gap-2 whitespace-nowrap">
-            <span id="refineBtnText">Refine 🔄</span>
-            <span id="refineSpinner" class="spinner hidden"></span>
-          </button>
+      <!-- Macro Gram Pills (2x2 on mobile, 4 in row on tablet/desktop) -->
+      <div id="macroTargetGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
+        <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+          <span class="block text-[10px] uppercase font-black text-slate-400 mb-0.5">Target Energy</span>
+          <span id="targetCaloriesVal" class="font-black text-brand-600 dark:text-brand-400 text-sm sm:text-base">-- kcal</span>
         </div>
-        <p id="refineError" class="text-red-400 text-sm hidden"></p>
+        <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+          <span class="block text-[10px] uppercase font-black text-slate-400 mb-0.5">Protein</span>
+          <span id="targetProteinVal" class="font-black text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">-- g</span>
+        </div>
+        <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+          <span class="block text-[10px] uppercase font-black text-slate-400 mb-0.5">Carbs</span>
+          <span id="targetCarbsVal" class="font-black text-amber-600 dark:text-amber-400 text-sm sm:text-base">-- g</span>
+        </div>
+        <div class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+          <span class="block text-[10px] uppercase font-black text-slate-400 mb-0.5">Fats</span>
+          <span id="targetFatVal" class="font-black text-sky-600 dark:text-sky-400 text-sm sm:text-base">-- g</span>
+        </div>
       </div>
-    </section>
+    </div>
 
-  </main>
+    <!-- Visual Macro Ratio Progress Bar & Hydration -->
+    <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+        <span id="macroRatioLabels">Ratio: 30% Protein | 45% Carbs | 25% Fat</span>
+        <span class="flex items-center gap-1">
+          <span>💧 Hydration Goal:</span>
+          <strong id="hydrationTargetVal" class="text-sky-600 dark:text-sky-400">2.8 L/day</strong>
+        </span>
+      </div>
 
-  <footer class="text-center py-8 text-gray-600 text-sm">
-    Built with ❤️ using FastAPI &amp; Google Gemini · FitBuddy © 2025
-  </footer>
+      <!-- Segmented Bar -->
+      <div class="w-full h-3 rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800">
+        <div id="macroBarProtein" title="Protein" class="bg-emerald-500 h-full transition-all duration-500" style="width: 30%"></div>
+        <div id="macroBarCarbs" title="Carbohydrates" class="bg-amber-500 h-full transition-all duration-500" style="width: 45%"></div>
+        <div id="macroBarFat" title="Fats" class="bg-sky-500 h-full transition-all duration-500" style="width: 25%"></div>
+      </div>
+    </div>
+  </div>
 
-  <!-- ====== JAVASCRIPT ====== -->
-  <script>
-    let currentPlanId = null;
-    let currentGoal   = null;
+  <!-- Weekly Workout Progress Bar -->
+  <div class="fit-card rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-sm shrink-0">
+        ✓
+      </div>
+      <div>
+        <span class="text-xs font-bold text-slate-900 dark:text-white">Weekly Exercise Execution Tracker</span>
+        <div class="text-[11px] text-slate-500 dark:text-slate-400" id="progressStatusText">0 of 0 exercises completed (0%)</div>
+      </div>
+    </div>
+    <div class="w-full sm:w-72 bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden shrink-0">
+      <div id="progressBarFill" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+    </div>
+  </div>
 
-    // ── Intensity pill toggles ──────────────────────────────────────────────
-    document.querySelectorAll('.intensity-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.intensity-btn').forEach(b => {
-          b.classList.remove('border-primary', 'bg-primary/20', 'text-white');
-          b.classList.add('border-white/10');
-        });
-        btn.classList.add('border-primary', 'bg-primary/20', 'text-white');
-        btn.classList.remove('border-white/10');
-        btn.querySelector('input').checked = true;
-      });
-    });
+  <!-- 7-Day Day Selector Tabs (Touch-scrollable on Mobile & Tablet) -->
+  <div class="day-tab-container no-print touch-scroll-x pb-2 -mx-3 px-3 sm:mx-0 sm:px-0">
+    <div class="flex items-center gap-2 min-w-max" id="dayTabsContainer">
+      <button onclick="filterDayView('all', this)" class="day-tab px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white shadow-sm transition">
+        All Days
+      </button>
+      {% for d in ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"] %}
+      <button onclick="filterDayView('{{ d }}', this)" class="day-tab px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+        {{ d }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
 
-    // ── Helpers ─────────────────────────────────────────────────────────────
-    function setLoading(btnText, spinner, loading) {
-      document.getElementById(btnText).textContent = loading
-        ? (btnText === 'generateBtnText' ? 'Generating…' : 'Refining…')
-        : (btnText === 'generateBtnText' ? 'Generate My Plan ✨' : 'Refine 🔄');
-      document.getElementById(spinner).classList.toggle('hidden', !loading);
-    }
+  <!-- 7-Day Routine Grid (1 col on mobile, 2 on tablet, 3 on desktop) -->
+  <div id="planGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+    <!-- Rendered via JavaScript -->
+  </div>
 
-    function showError(id, msg) {
-      const el = document.getElementById(id);
-      el.textContent = msg;
-      el.classList.remove('hidden');
-      setTimeout(() => el.classList.add('hidden'), 6000);
-    }
+  <!-- Inter-Set Rest Stopwatch Widget -->
+  <div id="restTimerWidget" class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 no-print">
+    <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
+      <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 flex items-center justify-center text-xl sm:text-2xl text-brand-600 dark:text-brand-400 shrink-0">
+        ⏱️
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Inter-Set Rest Stopwatch</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Precision countdown with Web Audio acoustic chime.</p>
+      </div>
+    </div>
 
-    // ── Render plan grid ────────────────────────────────────────────────────
-    function renderPlan(plan) {
-      const grid = document.getElementById('planGrid');
-      grid.innerHTML = '';
-      const colorPalette = [
-        'from-indigo-500/20 to-purple-500/10 border-indigo-500/30',
-        'from-emerald-500/20 to-teal-500/10 border-emerald-500/30',
-        'from-pink-500/20 to-rose-500/10 border-pink-500/30',
-        'from-amber-500/20 to-orange-500/10 border-amber-500/30',
-        'from-sky-500/20 to-blue-500/10 border-sky-500/30',
-        'from-violet-500/20 to-fuchsia-500/10 border-violet-500/30',
-        'from-lime-500/20 to-green-500/10 border-lime-500/30',
-      ];
-      let i = 0;
-      for (const [day, data] of Object.entries(plan)) {
-        const colors = colorPalette[i % colorPalette.length];
-        const exercises = (data.exercises || []).map(ex =>
-          `<li class="flex items-start gap-2 text-sm">
-            <span class="text-accent mt-0.5">▸</span>
-            <span><span class="font-medium text-white">${ex.name}</span>
-            &nbsp;—&nbsp;${ex.sets} sets × ${ex.reps}</span>
-           </li>`
-        ).join('');
+    <div class="flex items-center justify-between md:justify-end gap-3 flex-wrap sm:flex-nowrap w-full md:w-auto">
+      <div id="timerDisplay" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white font-mono">01:00</div>
+      
+      <div class="flex items-center gap-1.5">
+        <button onclick="setRestTime(30)" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition">30s</button>
+        <button onclick="setRestTime(45)" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition">45s</button>
+        <button onclick="setRestTime(60)" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold bg-brand-50 dark:bg-brand-950 hover:bg-brand-100 text-brand-700 dark:text-brand-300 rounded-lg transition border border-brand-200 dark:border-brand-800">60s</button>
+        <button onclick="setRestTime(90)" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition">90s</button>
+      </div>
 
-        grid.innerHTML += `
-          <div class="day-card bg-gradient-to-br ${colors} border rounded-2xl p-5 space-y-3 cursor-default">
-            <div class="flex items-center justify-between">
-              <span class="text-xs uppercase tracking-widest text-gray-400 font-semibold">${day}</span>
-              <span class="bg-white/10 text-xs px-2 py-0.5 rounded-full">${data.focus || 'Rest'}</span>
-            </div>
-            <ul class="space-y-1.5">${exercises || '<li class="text-sm text-gray-400">Rest day 🛌</li>'}</ul>
-          </div>`;
-        i++;
-      }
-    }
+      <div class="flex items-center gap-1.5">
+        <button id="timerToggleBtn" onclick="toggleTimer()" class="px-3.5 sm:px-4 py-2 rounded-xl bg-slate-900 dark:bg-brand-600 hover:bg-slate-800 dark:hover:bg-brand-700 text-white text-xs font-bold shadow-md transition">
+          Start
+        </button>
+        <button onclick="resetTimer()" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition">
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
 
-    // ── Scenario 1 – Generate ───────────────────────────────────────────────
-    document.getElementById('generateForm').addEventListener('submit', async e => {
-      e.preventDefault();
+  <!-- AI Routine Refinement Suite -->
+  <div id="refineSection" class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-4 sm:space-y-5 no-print">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center font-black text-base shrink-0">
+        ⚡
+      </div>
+      <div>
+        <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Fine-Tune & Adapt Your Routine</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Gemini 2.0 Flash will intelligently calibrate your exercises based on your feedback.</p>
+      </div>
+    </div>
 
-      const intensity = document.querySelector('input[name="intensity"]:checked');
-      if (!intensity) { showError('generateError', 'Please select an intensity level.'); return; }
+    <!-- Quick Refine Suggestions Chips -->
+    <div class="touch-scroll-x -mx-2 px-2 sm:mx-0 sm:px-0">
+      <div class="flex items-center gap-2 min-w-max pb-1">
+        <span class="text-xs font-bold text-slate-400 mr-1">Quick Ideas:</span>
+        <button type="button" onclick="setQuickRefine('Replace all barbell exercises with dumbbells')" class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-600 dark:hover:text-brand-400 border border-slate-200 dark:border-slate-700 transition text-slate-700 dark:text-slate-300">
+          Dumbbells only
+        </button>
+        <button type="button" onclick="setQuickRefine('Make each daily session under 35 minutes')" class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-600 dark:hover:text-brand-400 border border-slate-200 dark:border-slate-700 transition text-slate-700 dark:text-slate-300">
+          Shorter 35-min sessions
+        </button>
+        <button type="button" onclick="setQuickRefine('Add a 10-minute core finisher to strength days')" class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-600 dark:hover:text-brand-400 border border-slate-200 dark:border-slate-700 transition text-slate-700 dark:text-slate-300">
+          + Core finisher
+        </button>
+        <button type="button" onclick="setQuickRefine('Protect knees and lower back (strictly low-impact movements)')" class="text-xs px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950 hover:text-brand-600 dark:hover:text-brand-400 border border-slate-200 dark:border-slate-700 transition text-slate-700 dark:text-slate-300">
+          Protect knees & back
+        </button>
+      </div>
+    </div>
 
-      const payload = {
-        name:      document.getElementById('f-name').value.trim(),
-        age:       parseInt(document.getElementById('f-age').value),
-        weight:    parseFloat(document.getElementById('f-weight').value),
-        goal:      document.getElementById('f-goal').value,
-        intensity: intensity.value,
-      };
+    <!-- Refine Input Form -->
+    <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+      <input type="text" id="feedbackInput" placeholder="e.g. Day 3 feels too intense, add more hamstring work instead of squats..." class="flex-grow px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
+      <button type="button" onclick="refinePlan()" id="refineBtn" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-slate-900 dark:bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 shrink-0">
+        <span id="refineSpinner" class="hidden">
+          <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </span>
+        <span id="refineBtnText">Update Plan</span>
+      </button>
+    </div>
 
-      currentGoal = payload.goal;
-      setLoading('generateBtnText', 'generateSpinner', true);
+    <div id="refineError" class="hidden text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 p-3 rounded-xl"></div>
+  </div>
 
-      try {
-        const res  = await fetch('/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Unknown error');
-
-        currentPlanId = data.plan_id;
-        document.getElementById('planIdBadge').textContent = '#' + data.plan_id;
-
-        renderPlan(data.plan);
-        showTip(data.tip);
-
-        document.getElementById('planSection').classList.remove('hidden');
-        document.getElementById('planSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch (err) {
-        showError('generateError', '⚠ ' + err.message);
-      } finally {
-        setLoading('generateBtnText', 'generateSpinner', false);
-      }
-    });
-
-    // ── Show tip banner ─────────────────────────────────────────────────────
-    function showTip(text) {
-      document.getElementById('tipText').textContent = text;
-      document.getElementById('tipBanner').classList.remove('hidden');
-    }
-
-    // ── Scenario 3 – Refresh tip ────────────────────────────────────────────
-    async function refreshTip() {
-      if (!currentGoal) return;
-      try {
-        const res  = await fetch(`/tip/${encodeURIComponent(currentGoal)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail);
-        showTip(data.tip);
-      } catch (err) {
-        showTip('⚠ Could not fetch tip: ' + err.message);
-      }
-    }
-
-    // ── Scenario 2 – Refine ─────────────────────────────────────────────────
-    async function refinePlan() {
-      const feedback = document.getElementById('feedbackInput').value.trim();
-      if (!feedback) { showError('refineError', 'Please enter your feedback.'); return; }
-      if (!currentPlanId) { showError('refineError', 'No active plan found.'); return; }
-
-      setLoading('refineBtnText', 'refineSpinner', true);
-
-      try {
-        const res  = await fetch('/refine', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan_id: currentPlanId, feedback }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Unknown error');
-
-        renderPlan(data.plan);
-        if (data.tip) showTip(data.tip);
-        document.getElementById('feedbackInput').value = '';
-        document.getElementById('planGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch (err) {
-        showError('refineError', '⚠ ' + err.message);
-      } finally {
-        setLoading('refineBtnText', 'refineSpinner', false);
-      }
-    }
-
-    // Submit refine on Enter key
-    document.getElementById('feedbackInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') refinePlan();
-    });
-  </script>
-</body>
-</html>
+</section>
+{% endblock %}
