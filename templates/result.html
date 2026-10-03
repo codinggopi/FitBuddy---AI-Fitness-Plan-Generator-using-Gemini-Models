@@ -5,7 +5,6 @@
 {% block content %}
 <main class="max-w-6xl mx-auto space-y-6 sm:space-y-8 pt-2 sm:pt-4">
 
-  <!-- Header Meta Deck -->
   <div
     class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
     <div class="space-y-1">
@@ -41,7 +40,6 @@
     </div>
   </div>
 
-  <!-- User Banner Card -->
   <section
     class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
     aria-label="User profile">
@@ -67,7 +65,6 @@
     </div>
   </section>
 
-  <!-- Nutrition & Recovery Tip -->
   {% if nutrition_tip %}
   <div
     class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-sm flex items-start gap-4"
@@ -87,7 +84,6 @@
   </div>
   {% endif %}
 
-  <!-- 7-Day Workout Routine Grid -->
   <section class="space-y-4" aria-label="7-day workout plan">
     <div class="flex items-center justify-between">
       <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -103,7 +99,6 @@
         aria-label="{{ day }}">
 
         <div class="space-y-3">
-          <!-- Day Header -->
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <span class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 font-mono">{{
               day }}</span>
@@ -113,7 +108,6 @@
             </span>
           </div>
 
-          <!-- Warmup -->
           {% if details.warmup %}
           <div
             class="space-y-1 bg-amber-50/60 dark:bg-amber-950/20 p-3 rounded-xl border border-amber-200/60 dark:border-amber-900/40">
@@ -125,7 +119,6 @@
           </div>
           {% endif %}
 
-          <!-- Exercises -->
           {% if details.exercises %}
           <div class="space-y-2 pt-1">
             <p
@@ -154,7 +147,6 @@
           {% endif %}
         </div>
 
-        <!-- Cooldown -->
         {% if details.cooldown %}
         <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
           <p
@@ -170,7 +162,6 @@
     </div>
   </section>
 
-  <!-- Feedback & Plan Refinement Card -->
   <section
     class="fit-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm space-y-4 border border-slate-200/80 dark:border-slate-800"
     aria-label="Refine your plan">
@@ -203,7 +194,6 @@
     </p>
   </section>
 
-  <!-- Return Link -->
   <div class="text-center pt-2 pb-6">
     <a href="/"
       class="text-xs font-bold text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 transition">

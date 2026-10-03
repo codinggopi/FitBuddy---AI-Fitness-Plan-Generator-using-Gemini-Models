@@ -3,9 +3,6 @@
 {% block title %}FitBuddy AI — Personalized 7-Day Workout & Nutrition Protocol{% endblock %}
 
 {% block content %}
-<!-- ========================================================================= -->
-<!-- Hero Greeting -->
-<!-- ========================================================================= -->
 <section class="text-center max-w-4xl mx-auto space-y-3 sm:space-y-4 pt-2 sm:pt-4">
   <div
     class="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-[11px] sm:text-xs font-bold text-brand-700 dark:text-brand-300">
@@ -27,14 +24,10 @@
   </p>
 </section>
 
-<!-- ========================================================================= -->
-<!-- Intake Studio: User Parameters Form -->
-<!-- ========================================================================= -->
 <section id="intakeSection"
   class="fit-card rounded-2xl sm:rounded-3xl shadow-xl p-4 sm:p-8 lg:p-10 space-y-6 sm:space-y-8">
   <form id="generateForm" class="space-y-6 sm:space-y-8">
 
-    <!-- Step 1: Personal Bio & Physical Metrics -->
     <div>
       <div class="flex items-center justify-between mb-3 sm:mb-4 flex-wrap gap-2">
         <h2
@@ -44,7 +37,6 @@
           Personal Bio & Physical Metrics
         </h2>
 
-        <!-- Unit Toggle (Metric / Imperial) -->
         <div
           class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[11px] sm:text-xs font-bold">
           <button type="button" id="btnMetric" onclick="UnitManager.setSystem('metric')"
@@ -56,7 +48,6 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-        <!-- Full Name -->
         <div class="sm:col-span-2 md:col-span-1 lg:col-span-1">
           <label for="f-name" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Athlete
             Name</label>
@@ -64,14 +55,12 @@
             class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
         </div>
 
-        <!-- Age -->
         <div>
           <label for="f-age" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Age</label>
           <input type="number" id="f-age" required min="12" max="100" placeholder="26"
             class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
         </div>
 
-        <!-- Biological Sex -->
         <div>
           <label for="f-gender" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Biological
             Sex</label>
@@ -83,7 +72,6 @@
           </select>
         </div>
 
-        <!-- Weight -->
         <div>
           <label id="weightLabel" for="f-weight"
             class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Weight (kg)</label>
@@ -92,7 +80,6 @@
             class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
         </div>
 
-        <!-- Height & BMI Chip -->
         <div>
           <div class="flex items-center justify-between mb-1">
             <label id="heightLabel" for="f-height"
@@ -111,7 +98,6 @@
 
     <hr class="border-slate-100 dark:border-slate-800" />
 
-    <!-- Step 2: Primary Goal Selection -->
     <div>
       <h2
         class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-3 sm:mb-4 flex items-center gap-2">
@@ -161,10 +147,8 @@
 
     <hr class="border-slate-100 dark:border-slate-800" />
 
-    <!-- Step 3: Training Environment, Intensity & Duration -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
 
-      <!-- Training Environment -->
       <div>
         <h2
           class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
@@ -189,7 +173,6 @@
         <input type="hidden" id="f-equipment" value="Full Commercial Gym" />
       </div>
 
-      <!-- Intensity Level -->
       <div>
         <h2
           class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
@@ -214,7 +197,6 @@
         <input type="hidden" id="f-intensity" value="medium" />
       </div>
 
-      <!-- Target Session Duration & Active Days -->
       <div>
         <h2
           class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2 sm:mb-3 flex items-center gap-2">
@@ -249,10 +231,8 @@
 
     <hr class="border-slate-100 dark:border-slate-800" />
 
-    <!-- Step 4: Nutrition & Injury Safeguards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 
-      <!-- Dietary Style -->
       <div>
         <label for="f-dietary"
           class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
@@ -269,7 +249,6 @@
         </select>
       </div>
 
-      <!-- Physical Considerations / Injuries -->
       <div>
         <label for="f-injuries"
           class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
@@ -280,7 +259,6 @@
       </div>
     </div>
 
-    <!-- Submit Button -->
     <div>
       <button type="submit" id="generateBtn"
         class="w-full py-3.5 sm:py-4 px-6 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-black text-sm sm:text-base shadow-xl shadow-brand-500/25 transition-all transform active:scale-[0.99] flex items-center justify-center gap-3">
@@ -300,13 +278,8 @@
   </form>
 </section>
 
-
-<!-- ========================================================================= -->
-<!-- Active Plan Suite (Appears after Generation or Load) -->
-<!-- ========================================================================= -->
 <section id="planSection" class="hidden space-y-6 sm:space-y-8 animate-fade-in">
 
-  <!-- Plan Header Summary & Action Deck -->
   <div
     class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5 shadow-md">
     <div class="space-y-1">
@@ -322,33 +295,27 @@
         Guidance</p>
     </div>
 
-    <!-- Responsive Action Tools -->
     <div class="flex flex-wrap items-center gap-2 no-print">
-      <!-- Calendar Export (.ics) -->
       <button onclick="downloadCalendar()"
         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 transition shadow-sm">
         <span>📅</span> Calendar (.ics)
       </button>
 
-      <!-- Print / PDF -->
       <button onclick="window.print()"
         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
         <span>🖨️</span> Print / PDF
       </button>
 
-      <!-- Copy Routine -->
       <button onclick="copyPlanToClipboard()"
         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
         <span>📋</span> Copy
       </button>
 
-      <!-- JSON Export -->
       <button onclick="downloadJson()"
         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
         <span>💾</span> JSON
       </button>
 
-      <!-- Tweak / Refine -->
       <button onclick="scrollToRefine()"
         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950 hover:bg-brand-100 transition border border-brand-200 dark:border-brand-800">
         <span>⚡</span> Tweak
@@ -356,7 +323,6 @@
     </div>
   </div>
 
-  <!-- Nutrition & Macro Target Deck -->
   <div id="nutritionCard" class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-5 sm:space-y-6">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
 
@@ -374,7 +340,6 @@
         </p>
       </div>
 
-      <!-- Macro Gram Pills (2x2 on mobile, 4 in row on tablet/desktop) -->
       <div id="macroTargetGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
         <div
           class="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
@@ -402,7 +367,6 @@
       </div>
     </div>
 
-    <!-- Visual Macro Ratio Progress Bar & Hydration -->
     <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
       <div
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">
@@ -413,7 +377,6 @@
         </span>
       </div>
 
-      <!-- Segmented Bar -->
       <div class="w-full h-3 rounded-full overflow-hidden flex bg-slate-100 dark:bg-slate-800">
         <div id="macroBarProtein" title="Protein" class="bg-emerald-500 h-full transition-all duration-500"
           style="width: 30%"></div>
@@ -425,7 +388,6 @@
     </div>
   </div>
 
-  <!-- Weekly Workout Progress Bar -->
   <div class="fit-card rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div class="flex items-center gap-3">
       <div
@@ -444,7 +406,6 @@
     </div>
   </div>
 
-  <!-- 7-Day Day Selector Tabs (Touch-scrollable on Mobile & Tablet) -->
   <div class="day-tab-container no-print touch-scroll-x pb-2 -mx-3 px-3 sm:mx-0 sm:px-0">
     <div class="flex items-center gap-2 min-w-max" id="dayTabsContainer">
       <button onclick="filterDayView('all', this)"
@@ -460,12 +421,9 @@
     </div>
   </div>
 
-  <!-- 7-Day Routine Grid (1 col on mobile, 2 on tablet, 3 on desktop) -->
   <div id="planGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-    <!-- Rendered via JavaScript -->
   </div>
 
-  <!-- Inter-Set Rest Stopwatch Widget -->
   <div id="restTimerWidget"
     class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 no-print">
     <div class="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
@@ -507,7 +465,6 @@
     </div>
   </div>
 
-  <!-- AI Routine Refinement Suite -->
   <div id="refineSection"
     class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-sm space-y-4 sm:space-y-5 no-print">
     <div class="flex items-center gap-3">
@@ -522,7 +479,6 @@
       </div>
     </div>
 
-    <!-- Quick Refine Suggestions Chips -->
     <div class="touch-scroll-x -mx-2 px-2 sm:mx-0 sm:px-0">
       <div class="flex items-center gap-2 min-w-max pb-1">
         <span class="text-xs font-bold text-slate-400 mr-1">Quick Ideas:</span>
@@ -545,7 +501,6 @@
       </div>
     </div>
 
-    <!-- Refine Input Form -->
     <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
       <input type="text" id="feedbackInput"
         placeholder="e.g. Day 3 feels too intense, add more hamstring work instead of squats..."
