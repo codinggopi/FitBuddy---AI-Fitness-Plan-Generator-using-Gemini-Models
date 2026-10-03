@@ -65,7 +65,7 @@ FitBuddy communicates with Google AI Studio's free tier quotas (up to 15 Request
 
 ---
 
-## 🥗 Dual-Gender Mifflin-St Jeor Engine
+## 🥗 Dual-Gender Engine
 
 Generic fitness tools apply a single formula regardless of sex. FitBuddy calculates Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) with biological accuracy:
 
