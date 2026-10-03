@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}FitBuddy AI — Admin Dashboard & User Records{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto space-y-6 pt-2 sm:pt-4">
+
+  <!-- Header Banner -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+    <div>
+      <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-[11px] sm:text-xs font-black uppercase tracking-wider text-brand-700 dark:text-brand-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Admin Dashboard
+        </span>
+        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+          {{ users | length }} registered user{{ 's' if users | length != 1 else '' }}
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+        All Users & Generated Plans
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+        Comprehensive administrative management of athlete profiles, parameters, and AI-generated workout routines.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 shrink-0">
+      <a href="/" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition shadow-md shadow-brand-500/20 active:scale-95">
+        <span>+</span> Create New Plan
+      </a>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  {% if not users %}
+  <div class="fit-card rounded-3xl p-12 text-center space-y-4 shadow-sm">
+    <div class="w-16 h-16 rounded-2xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-3xl mx-auto shadow-sm">
+      🏋️
+    </div>
+    <h3 class="text-lg font-bold text-slate-900 dark:text-white">No Users Registered Yet</h3>
+    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+      Users who generate a 7-day fitness routine on the home studio will be recorded here automatically.
+    </p>
+    <div>
+      <a href="/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition shadow-md">
+        Create First Plan &rarr;
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Users Table Container -->
+  {% if users %}
+  <div class="fit-card rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse" aria-label="All registered users">
+        <thead>
+          <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <th class="py-3.5 px-4 sm:px-5">ID</th>
+            <th class="py-3.5 px-4 sm:px-5">Athlete</th>
+            <th class="py-3.5 px-3 sm:px-4">Age</th>
+            <th class="py-3.5 px-3 sm:px-4">Weight</th>
+            <th class="py-3.5 px-4 sm:px-5">Fitness Goal</th>
+            <th class="py-3.5 px-3 sm:px-4">Intensity</th>
+            <th class="py-3.5 px-4 sm:px-5">Original Plan</th>
+            <th class="py-3.5 px-4 sm:px-5">Updated Plan</th>
+            <th class="py-3.5 px-4 sm:px-5 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs text-slate-700 dark:text-slate-300">
+          {% for user in users %}
+          <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+            
+            <!-- ID -->
+            <td class="py-4 px-4 sm:px-5 font-mono font-bold text-brand-600 dark:text-brand-400 whitespace-nowrap">
+              #{{ user.id }}
+            </td>
+
+            <!-- Athlete Name & Handle -->
+            <td class="py-4 px-4 sm:px-5">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white font-black text-sm flex items-center justify-center shrink-0 shadow-sm">
+                  {{ user.name[0] | upper }}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white leading-tight">
+                    {{ user.name }}
+                  </div>
+                  {% if user.user_id %}
+                  <div class="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
+                    {{ user.user_id }}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+
+            <!-- Age -->
+            <td class="py-4 px-3 sm:px-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+              {{ user.age }} yrs
+            </td>
+
+            <!-- Weight -->
+            <td class="py-4 px-3 sm:px-4 font-semibold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+              {{ user.weight }} kg
+            </td>
+
+            <!-- Goal -->
+            <td class="py-4 px-4 sm:px-5 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-50 dark:bg-brand-950/70 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800">
+                {{ user.goal }}
+              </span>
+            </td>
+
+            <!-- Intensity -->
+            <td class="py-4 px-3 sm:px-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[11px] font-bold capitalize
+                {% if user.intensity|lower == 'high' %}
+                  bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900
+                {% elif user.intensity|lower == 'low' %}
+                  bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900
+                {% else %}
+                  bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900
+                {% endif %}">
+                {{ user.intensity }}
+              </span>
+            </td>
+
+            <!-- Original Plan JSON -->
+            <td class="py-4 px-4 sm:px-5">
+              {% if user.original_plan %}
+              <details class="group">
+                <summary class="cursor-pointer text-[11px] font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 hover:underline list-none flex items-center gap-1">
+                  <span>View JSON</span>
+                  <span class="group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <pre class="mt-2 text-[10px] p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 max-h-56 max-w-xs sm:max-w-sm overflow-auto font-mono whitespace-pre-wrap break-all border border-slate-200 dark:border-slate-800 shadow-inner">{{ user.original_plan }}</pre>
+              </details>
+              {% else %}
+              <span class="text-[11px] text-slate-400 italic">None</span>
+              {% endif %}
+            </td>
+
+            <!-- Updated Plan JSON -->
+            <td class="py-4 px-4 sm:px-5">
+              {% if user.updated_plan %}
+              <details class="group">
+                <summary class="cursor-pointer text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:underline list-none flex items-center gap-1">
+                  <span>View JSON</span>
+                  <span class="group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <pre class="mt-2 text-[10px] p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 max-h-56 max-w-xs sm:max-w-sm overflow-auto font-mono whitespace-pre-wrap break-all border border-slate-200 dark:border-slate-800 shadow-inner">{{ user.updated_plan }}</pre>
+              </details>
+              {% else %}
+              <span class="text-[11px] text-slate-400 italic">None</span>
+              {% endif %}
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-4 sm:px-5 text-right whitespace-nowrap">
+              {% if user.plan_id %}
+              <a href="/result/{{ user.plan_id }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition shadow-sm hover:shadow active:scale-95">
+                <span>View plan</span> &rarr;
+              </a>
+              {% else %}
+              <span class="text-slate-400 text-xs">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}FitBuddy AI — Your 7-Day Plan #{{ plan_id }}{% endblock %}
+
+{% block content %}
+<main class="max-w-6xl mx-auto space-y-6 sm:space-y-8 pt-2 sm:pt-4">
+
+  <!-- Header Meta Deck -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400">
+          Personalized Routine
+        </span>
+        <span
+          class="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+          Plan #{{ plan_id }}
+        </span>
+        {% if is_updated %}
+        <span
+          class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          ✓ Plan Updated
+        </span>
+        {% endif %}
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+        {{ username }}'s 7-Day Workout Protocol
+      </h1>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="/view-all-users"
+        class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+        Admin Dashboard &rarr;
+      </a>
+      <a href="/"
+        class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 transition shadow-sm">
+        + New Plan
+      </a>
+    </div>
+  </div>
+
+  <!-- User Banner Card -->
+  <section
+    class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+    aria-label="User profile">
+    <div class="flex items-center gap-4">
+      <div
+        class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-md shadow-brand-500/20 shrink-0">
+        🏋️
+      </div>
+      <div>
+        <h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">{{ username }}</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          {{ age }} yrs &middot; {{ weight }} kg &middot; <span
+            class="capitalize font-semibold text-slate-700 dark:text-slate-300">{{ intensity }}</span> intensity
+          {% if user_id %} &middot; <span class="font-mono text-slate-400">{{ user_id }}</span>{% endif %}
+        </p>
+      </div>
+    </div>
+    <div>
+      <span
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+        🎯 {{ goal }}
+      </span>
+    </div>
+  </section>
+
+  <!-- Nutrition & Recovery Tip -->
+  {% if nutrition_tip %}
+  <div
+    class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/20 shadow-sm flex items-start gap-4"
+    role="complementary" aria-label="Nutrition tip">
+    <div
+      class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xl shrink-0">
+      🥗
+    </div>
+    <div class="space-y-1">
+      <div class="text-[11px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+        Nutrition &amp; Recovery Guidance
+      </div>
+      <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+        {{ nutrition_tip }}
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 7-Day Workout Routine Grid -->
+  <section class="space-y-4" aria-label="7-day workout plan">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+        <span>📅</span> Your {% if is_updated %}<span class="text-emerald-600 dark:text-emerald-400">Updated</span>{%
+        endif %} 7-Day Protocol
+      </h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {% for day, details in workout_plan.items() %}
+      <article
+        class="fit-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition border border-slate-200/80 dark:border-slate-800"
+        aria-label="{{ day }}">
+
+        <div class="space-y-3">
+          <!-- Day Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <span class="text-xs font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 font-mono">{{
+              day }}</span>
+            <span
+              class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+              {{ details.focus | default('Rest') }}
+            </span>
+          </div>
+
+          <!-- Warmup -->
+          {% if details.warmup %}
+          <div
+            class="space-y-1 bg-amber-50/60 dark:bg-amber-950/20 p-3 rounded-xl border border-amber-200/60 dark:border-amber-900/40">
+            <p
+              class="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1">
+              <span>🌞</span> Warm-up (5–10 min)
+            </p>
+            <p class="text-xs text-slate-700 dark:text-slate-300 leading-snug">{{ details.warmup }}</p>
+          </div>
+          {% endif %}
+
+          <!-- Exercises -->
+          {% if details.exercises %}
+          <div class="space-y-2 pt-1">
+            <p
+              class="text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 flex items-center gap-1">
+              <span>💪</span> Exercises
+            </p>
+            <ul class="space-y-2">
+              {% for ex in details.exercises %}
+              <li
+                class="text-xs flex items-start gap-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                <span class="text-emerald-500 font-black mt-0.5">▸</span>
+                <div>
+                  <span class="font-bold text-slate-900 dark:text-white">{{ ex.name }}</span>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-semibold">
+                    {{ ex.sets }} sets &times; {{ ex.reps }}
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+          <div class="p-6 text-center text-slate-400 dark:text-slate-500 italic text-sm">
+            Rest day 🛌
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Cooldown -->
+        {% if details.cooldown %}
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+          <p
+            class="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 flex items-center gap-1 mb-1">
+            <span>❄️</span> Cooldown &amp; Recovery
+          </p>
+          <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">{{ details.cooldown }}</p>
+        </div>
+        {% endif %}
+
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Feedback & Plan Refinement Card -->
+  <section
+    class="fit-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm space-y-4 border border-slate-200/80 dark:border-slate-800"
+    aria-label="Refine your plan">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl shrink-0">
+        ⚡
+      </div>
+      <div>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Refine & Adapt Your Routine</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Describe any adjustments, and FitBuddy AI will
+          intelligently calibrate your exercises.</p>
+      </div>
+    </div>
+
+    <form action="/submit-feedback" method="post" id="feedbackForm" class="space-y-3">
+      <input type="hidden" name="plan_id" value="{{ plan_id }}" />
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="text" name="feedback" required
+          placeholder='e.g. "Add more core work on Day 3", "Reduce squat volume", "Low impact for knees"'
+          class="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-600 transition" />
+        <button type="submit" id="refineBtn"
+          class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 shrink-0 active:scale-95 cursor-pointer">
+          <span id="refineBtnLabel">Refine Plan 🔄</span>
+        </button>
+      </div>
+    </form>
+    <p class="text-[11px] text-slate-400 dark:text-slate-500">
+      💡 Each refinement builds dynamically on the previous version of your plan.
+    </p>
+  </section>
+
+  <!-- Return Link -->
+  <div class="text-center pt-2 pb-6">
+    <a href="/"
+      class="text-xs font-bold text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 transition">
+      &larr; Return to Routine Studio
+    </a>
+  </div>
+
+</main>
+
+<script>
+  document.getElementById('feedbackForm')?.addEventListener('submit', function () {
+    var btn = document.getElementById('refineBtn');
+    var label = document.getElementById('refineBtnLabel');
+    if (btn && label) {
+      label.textContent = 'Refining…';
+      btn.disabled = true;
+      btn.classList.add('opacity-75');
+    }
+  });
+</script>
+{% endblock %}
